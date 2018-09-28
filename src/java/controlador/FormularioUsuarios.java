@@ -6,11 +6,14 @@ package controlador;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.Usuario;
 
 /**
  *
@@ -36,9 +39,29 @@ public class FormularioUsuarios extends HttpServlet {
         String correo = request.getParameter("correo");
         String contrasenia = request.getParameter("contrasenia");
         
-        request.setAttribute("nombre", nombre);
-        request.setAttribute("correo", correo);
-        request.setAttribute("contrasenia", contrasenia);
+        Usuario u = new Usuario();
+        u.nombre = nombre;
+        u.correo = correo;
+        u.contrasenia = contrasenia;
+        
+        List<Usuario> listaUsuarios = new ArrayList<>();
+        listaUsuarios.add(u);
+        
+        Usuario u2 = new Usuario();
+        u2.nombre = "alex";
+        u2.correo = "alex@prueba.com";
+        u2.contrasenia = "unacontraseniamuydificil";
+        
+        listaUsuarios.add(u2);
+        
+        Usuario u3 = new Usuario();
+        u3.nombre = "felipe";
+        u3.correo = "felipe@prueba.com";
+        u3.contrasenia = "unacontraseniamuydificil3";
+        
+        listaUsuarios.add(u3);
+        
+        request.setAttribute("lista", listaUsuarios);
         
         rd.forward(request, response);
     }

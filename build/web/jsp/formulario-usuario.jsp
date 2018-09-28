@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <h1>Formulario para crear usuarios</h1>
-        <form method="get" action="FormularioUsuarios">
+        <form method="post" action="FormularioUsuarios">
             <div class="form-group">
                 <label for="inputNombre">Nombre</label>
                 <input name="nombre" type="text" class="form-control" id="inputNombre" aria-describedby="emailHelp" placeholder="Ingrese su nombre">
@@ -36,9 +36,29 @@
             <button type="submit" class="btn btn-primary">Guardar Usuario</button>
         </form>
         <div class="container">
-            nombre: <%= request.getAttribute("nombre") %><br>
-            correo: <%= request.getAttribute("correo") %><br>
-            contraseña: <%= request.getAttribute("contrasenia") %><br>
+            <table>
+                <tr>
+                    <th>nombre</th>
+                    <th>correo</th>
+                    <th>contraseña</th>
+                </tr>
+            <%@page import="modelo.Usuario" %>
+            <%@page import="java.util.List" %>
+            <% List<Usuario> listaUsuarios = (List<Usuario>)request.getAttribute("lista"); %>
+            <%
+            Usuario u;
+            for(int i = 0; i < listaUsuarios.size(); i++){
+                u = listaUsuarios.get(i);
+            %>
+            <!--codigo html-->
+                <tr>
+                    <td><%= u.nombre %></td>
+                    <td><%= u.correo %></td>
+                    <td><%= u.contrasenia %></td>
+                </tr>
+            <%
+            }%>
+            </table>
         </div>
     </div>
 </body>
