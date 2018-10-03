@@ -46,9 +46,7 @@
             <%@page import="java.util.List" %>
             <% List<Usuario> listaUsuarios = (List<Usuario>)request.getAttribute("lista"); %>
             <%
-            Usuario u;
-            for(int i = 0; i < listaUsuarios.size(); i++){
-                u = listaUsuarios.get(i);
+            for(Usuario u: listaUsuarios){
             %>
             <!--codigo html-->
                 <tr>

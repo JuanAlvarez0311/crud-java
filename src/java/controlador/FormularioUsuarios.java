@@ -5,9 +5,14 @@
 package controlador;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,52 +26,7 @@ import modelo.Usuario;
  */
 public class FormularioUsuarios extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP
-     * <code>GET</code> and
-     * <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("jsp/formulario-usuario.jsp");
-        
-        String nombre = request.getParameter("nombre");
-        String correo = request.getParameter("correo");
-        String contrasenia = request.getParameter("contrasenia");
-        
-        Usuario u = new Usuario();
-        u.nombre = nombre;
-        u.correo = correo;
-        u.contrasenia = contrasenia;
-        
-        List<Usuario> listaUsuarios = new ArrayList<>();
-        listaUsuarios.add(u);
-        
-        Usuario u2 = new Usuario();
-        u2.nombre = "alex";
-        u2.correo = "alex@prueba.com";
-        u2.contrasenia = "unacontraseniamuydificil";
-        
-        listaUsuarios.add(u2);
-        
-        Usuario u3 = new Usuario();
-        u3.nombre = "felipe";
-        u3.correo = "felipe@prueba.com";
-        u3.contrasenia = "unacontraseniamuydificil3";
-        
-        listaUsuarios.add(u3);
-        
-        request.setAttribute("lista", listaUsuarios);
-        
-        rd.forward(request, response);
-    }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -79,7 +39,14 @@ public class FormularioUsuarios extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        RequestDispatcher rd = request.getRequestDispatcher("jsp/formulario-usuario.jsp");
+        
+        
+        List<Usuario> listaUsuarios = new ArrayList<>();
+        
+        request.setAttribute("lista", listaUsuarios);
+        
+        rd.forward(request, response);
     }
 
     /**
@@ -94,7 +61,41 @@ public class FormularioUsuarios extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        RequestDispatcher rd = request.getRequestDispatcher("jsp/formulario-usuario.jsp");
+        
+        String nombre = request.getParameter("nombre");
+        String correo = request.getParameter("correo");
+        String contrasenia = request.getParameter("contrasenia");
+        
+        Usuario u = new Usuario();
+        u.nombre = nombre;
+        u.correo = correo;
+        u.contrasenia = contrasenia;
+        
+        guardarUsuario(u);
+        
+        List<Usuario> listaUsuarios = new ArrayList<>();
+        listaUsuarios.add(u);
+        
+        request.setAttribute("lista", listaUsuarios);
+        
+        rd.forward(request, response);
+    }
+    
+    public void guardarUsuario(Usuario u) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/deportes", "root", "");
+            PreparedStatement ps = conexion.prepareStatement("INSERT INTO usuarios (nombre, correo, contrasenia) VALUES (?, ?, ?)");
+            ps.setString(1, u.nombre);
+            ps.setString(2, u.correo);
+            ps.setString(3, u.contrasenia);
+            ps.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(FormularioUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(FormularioUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
